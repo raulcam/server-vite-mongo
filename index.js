@@ -25,7 +25,6 @@ app.use("/users", userRouter);
 app.use(errorHandler);
 
 //TODO Importante para checar el puerto desde el front
-
 app.listen(PORT, () => {
   console.log(`Servidor Corriendo en el puerto http://localhost:${PORT}`);
 });

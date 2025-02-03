@@ -1,7 +1,10 @@
 const User = require("../models/userModel");
 
 //Traemos el modelo a usar, ejemplo Users
-
+const getTokenUser = async (id) => {
+  const user = await User.findById(id).select("-password");
+  return user;
+};
 const getUsers = async () => {
   const users = await User.find();
   return users || null;
@@ -25,21 +28,20 @@ const createNewUser = async (userData) => {
 };
 
 const updateUser = async (id, updateData) => {
-   const newDoc = await User.findOneAndUpdate({ _id: id }, updateData, {
+  const newDoc = await User.findOneAndUpdate({ _id: id }, updateData, {
     new: true,
     runValidators: true,
   });
   return newDoc;
 };
 
-const deleteUser = async (id) =>{
+const deleteUser = async (id) => { 
   const deleteDoc = await User.deleteOne({
-    _id: id
-  })
-
+    _id: id,
+  });
+ 
   return deleteDoc;
-
-}
+};
 
 module.exports = {
   getUsers,
@@ -47,5 +49,6 @@ module.exports = {
   createNewUser,
   getExistingUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getTokenUser,
 };

@@ -1,11 +1,11 @@
+const User = require("../models/userModel");
 const { authService } = require("../services/authService");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "mySecretKey123";
+const SECRET_KEY = "MY_SECRET";
 
 const authUserController = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
     const usuario = await authService(email, password);
     
     if (!usuario) {
@@ -16,13 +16,14 @@ const authUserController = async (req, res) => {
       {
         id: usuario.id,
         email: usuario.email,
+        role: usuario.role
       },
       SECRET_KEY,
       {
-        expiresIn: "5h",
+        expiresIn: "10h",
       }
     );
-
+ 
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: "Error interno del servidor" });

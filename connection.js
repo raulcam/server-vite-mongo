@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { createMasterUser } = require("./utils/createMaster");
 const uri = "mongodb://localhost:27017/admin";
 
 const db = mongoose.connection;
@@ -9,10 +10,15 @@ try {
   console.log(error);
 }
 
-db.on("open", (_) => {
+db.on("open", async () => {
   console.log("Data base conected", uri);
+  try {
+    await createMasterUser();
+  } catch (error) {
+    console.error("Error al crear el usuario master:", error);
+  }
 });
 
 db.on("error", (err) => {
   console.log("Error Data base conected", err);
-});  
+});
