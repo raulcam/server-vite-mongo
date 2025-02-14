@@ -8,27 +8,40 @@ const userSchema = new Schema({
   username: String,
   password: {
     type: String,
-    require: true
+    require: true,
   },
   phone: String,
   email: {
     type: String,
     require: true,
-    unique: true
+    unique: true,
   },
   status: {
     type: Number,
-    default: 0
+    default: 0,
   },
-  role: { type: String, enum: ["user", "admin", "master"], default: "user" },
+  role: {
+    type: String,
+    enum: ["user", "admin", "superadmin"],
+    default: "user",
+  },
+  permissions: [{
+    view: Boolean,
+    update: Boolean,
+    create: Boolean,
+    delete: Boolean,
+  }],
   isUser: Boolean,
   createAt: String,
   updateAt: String,
 });
 
 userSchema.pre("findOneAndDelete", function (next) {
-  if (this.getQuery().role === "master") {
-    const error = new Error("No se puede eliminar al usuario master.");
+  if (
+    this.getQuery().role === "superadmin" ||
+    this.getQuery().role === "admin"
+  ) {
+    const error = new Error("No se puede eliminar al usuario superadmin.");
     return next(error);
   }
   next();

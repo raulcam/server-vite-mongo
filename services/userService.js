@@ -39,7 +39,6 @@ const deleteUser = async (id) => {
   const deleteDoc = await User.deleteOne({
     _id: id,
   });
- 
   return deleteDoc;
 };
 

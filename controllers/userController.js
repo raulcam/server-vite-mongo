@@ -66,6 +66,12 @@ const createUser = async (req, res) => {
       email: req.body.email,
       isUser: req.body.isUser ?? false,
       password: hashedPassword,
+      permissions:[{
+        view: false,
+        update: false,
+        create: false,
+        delete: false,
+      }]
     };
 
     if (existingUser) {
@@ -101,7 +107,8 @@ const updateExistingUser = async (req, res) => {
   }
 };
 
-const deleteUserExiting = async (req, res) => {
+
+const deleteUserExiting = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -109,19 +116,18 @@ const deleteUserExiting = async (req, res) => {
       return res.status(404).json({ message: "Usuario ya fue eliminado" });
     }
 
-    if (user.role === "master") {
-      return res
-        .status(403)
-        .json({ message: "No puedes eliminar al usuario master" });
+    if (user.role === "superadmin" || user.role === "admin") {
+      return res.status(403).json({ message: "No puedes eliminar a un usuario con rol admin o superadmin" });
     }
 
-    const deletUser = await deleteUser(req.params.id);
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
 
-    if (!deletUser) {
-      res.status(400).json({ message: "No se pudo eliminar" });
+    if (!deletedUser) {
+      return res.status(400).json({ message: "No se pudo eliminar el usuario" });
     }
 
-    res.status(200).json({ menssage: "Se elimino", user: req.body });
+    res.status(200).json({ message: "Usuario eliminado correctamente", user: deletedUser });
+
   } catch (error) {
     next(error);
   }

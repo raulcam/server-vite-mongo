@@ -3,27 +3,51 @@ const User = require("../models/userModel"); // Importa el modelo de usuario
 
 const createMasterUser = async () => {
   try {
-    const existingMaster = await User.findOne({ role: "master" });
+    const existingMaster = await User.findOne({ role: "superadmin" });
 
     if (!existingMaster) {
-      const hashedPassword = await bcrypt.hash("master1996", 10);
+      const hashedPassword = await bcrypt.hash("superadmin123", 10);
 
       const masterUser = new User({
-        username: "MasterAdmin",
-        email: "master@admin.com",
+        username: "SuperAdmin",
+        email: "superadmin@admin.com",
         password: hashedPassword,
-        role: "master",
+        role: "superadmin",
       });
 
       await masterUser.save();
-      console.log("Ser creo master");
+      console.log("Ser creo superadmin");
     } else {
-      console.log("Master");
+      console.log("Superadmin");
     }
   } catch (error) {
-    console.error("Error al crear el usuario master:", error);
+    console.error("Error al crear el usuario superadmin:", error);
+    next(error)
+  } 
+};
+const createaAdminUser = async () => {
+  try {
+    const existingMaster = await User.findOne({ role: "admin" });
+
+    if (!existingMaster) {
+      const hashedPassword = await bcrypt.hash("admin123", 10);
+
+      const masterUser = new User({
+        username: "Admin",
+        email: "admin@admin.com",
+        password: hashedPassword,
+        role: "admin",
+      });
+
+      await masterUser.save();
+      console.log("Ser creo admin");
+    } else {
+      console.log("Admin");
+    }
+  } catch (error) {
+    console.error("Error al crear el usuario sadmin:", error);
     next(error)
   } 
 };
 
-module.exports = { createMasterUser };
+module.exports = { createMasterUser,createaAdminUser };
